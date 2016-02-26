@@ -13,6 +13,8 @@
     "autoload": {
 			"files": [
 				"module/base.php",
+				"module/es-importer.php",
+				"module/es-admin.php",
 				"module/widget.php"
 			]
 		}
