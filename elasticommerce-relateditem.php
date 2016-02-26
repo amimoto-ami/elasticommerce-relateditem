@@ -15,7 +15,8 @@ define( 'ESCR_ROOT', __FILE__ );
 require_once 'vendor/autoload.php';
 
 $ESCR_Base = ESCR_Base::get_instance();
-$ESCR_Base->init();
+$ESCR_Admin = ESCR_Admin::get_instance();
+$ESCR_Admin->init();
 
 function escr_related_item() {
 	$data = escr_get_related_item();

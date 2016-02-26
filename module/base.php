@@ -34,11 +34,4 @@ class ESCR_Base {
 		return $text_domain;
 	}
 
-	public function init() {
-		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
-	}
-
-	public function escr_register_widgets() {
-		register_widget( 'ESC_RelatedItems' );
-	}
 }
