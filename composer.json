@@ -12,7 +12,8 @@
     },
     "autoload": {
 			"files": [
-				"module/base.php"
+				"module/base.php",
+				"module/widget.php"
 			]
 		}
 }

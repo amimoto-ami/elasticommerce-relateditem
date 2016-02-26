@@ -11,4 +11,19 @@
  * @package Elasticommerce-relateditem
  */
 
+define( 'ESCR_ROOT', __FILE__ );
 require_once 'vendor/autoload.php';
+
+$ESCR_Base = ESCR_Base::get_instance();
+$ESCR_Base->init();
+
+function escr_related_item() {
+	$data = escr_get_related_item();
+	$html = "<p>{$data}</p>";
+	echo $html;
+}
+
+function escr_get_related_item() {
+	$data = 'hoge';
+	return $data;
+}
