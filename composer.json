@@ -1,0 +1,13 @@
+{
+    "name": "digitalcube/elasticommerce-relateditem",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "hideokamoto",
+            "email": "hide.okamoto@digitalcube.jp"
+        }
+    ],
+    "require": {
+        "ruflin/elastica": "dev-master"
+    }
+}
