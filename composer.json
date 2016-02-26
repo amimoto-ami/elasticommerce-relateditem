@@ -9,5 +9,10 @@
     ],
     "require": {
         "ruflin/elastica": "dev-master"
-    }
+    },
+    "autoload": {
+			"files": [
+				"module/base.php"
+			]
+		}
 }

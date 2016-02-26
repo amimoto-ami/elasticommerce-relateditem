@@ -10,3 +10,5 @@
  * Domain Path: /languages
  * @package Elasticommerce-relateditem
  */
+
+require_once 'vendor/autoload.php';
