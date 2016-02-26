@@ -19,11 +19,16 @@ $ESCR_Base->init();
 
 function escr_related_item() {
 	$data = escr_get_related_item();
-	$html = "<p>{$data}</p>";
 	echo $html;
 }
 
 function escr_get_related_item() {
+	$data = escr_get_related_item_data();
+	$html = "<p>{$data}</p>";
+	return $html;
+}
+
+function escr_get_related_item_data() {
 	$data = 'hoge';
 	return $data;
 }
