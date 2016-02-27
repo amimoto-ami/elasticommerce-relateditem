@@ -3,7 +3,6 @@ class ESCR_Admin extends ESCR_Base {
 	private static $instance;
 	private static $text_domain;
 
-
 	private function __construct() {
 		self::$text_domain = ESCR_Base::text_domain();
 	}
@@ -28,46 +27,43 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function add_admin_menu() {
-		add_options_page( 'WP Elasticsearch', 'WP Elasticsearch', 'manage_options', 'wp_elasticsearch', array( $this, 'wpels_options_page' ) );
+		add_options_page( 'Elasticommerce Related Items', 'Elasticommerce Related Items', 'manage_options', 'escr_related', array( $this, 'escr_related_options' ) );
 	}
 
 	public function settings_init() {
-		register_setting( 'wpElasticsearch', 'wpels_settings' );
+		register_setting( 'ElasticommerceRelated', 'escr_settings' );
 
 		add_settings_section(
-			'wpels_wpElasticsearch_section',
-			__( '', 'wp-elasticsearch' ),
+			'escr_RelatedItem_settings',
+			__( '', 'escr-relateditem' ),
 			array( $this, 'escr_settings_section_callback' ),
-			'wpElasticsearch'
+			'ElasticommerceRelated'
 		);
 
 		add_settings_field(
 			'endpoint',
-			__( 'Endpoint', 'wp-elasticsearch' ),
+			__( 'Endpoint', 'escr-relateditem' ),
 			array( $this, 'endpoint_render' ),
-			'wpElasticsearch',
-			'wpels_wpElasticsearch_section'
+			'ElasticommerceRelated',
+			'escr_RelatedItem_settings'
 		);
 
 	}
 	public function endpoint_render() {
-		$options = get_option( 'wpels_settings' );
-		echo "<input type='text' name='wpels_settings[endpoint]' value='". $options['endpoint']. "'>";
+		$options = get_option( 'escr_settings' );
+		echo "<input type='text' name='escr_settings[endpoint]' value='". $options['endpoint']. "'>";
 	}
 
 	public function escr_settings_section_callback() {
-
-		echo __( '', 'wp-elasticsearch' );
-
+		echo __( '', 'escr-relateditem' );
 	}
 
 
-	public function wpels_options_page() {
-
+	public function escr_related_options() {
 		echo "<form action='options.php' method='post'>";
-		echo '<h2>WP Elasticsearch</h2>';
-		settings_fields( 'wpElasticsearch' );
-		do_settings_sections( 'wpElasticsearch' );
+		echo '<h2>Elasticommerce Related Items</h2>';
+		settings_fields( 'ElasticommerceRelated' );
+		do_settings_sections( 'ElasticommerceRelated' );
 		submit_button();
 		echo '</form>';
 	}
