@@ -60,4 +60,15 @@ class ESCR_Base {
 
 		return $options;
 	}
+	public function get_elasticsearch_target() {
+		$options = get_option( 'escr_settings' );
+		if ( ! isset( $options['target'] ) ) {
+			$target = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+		} elseif ( ! is_array( $options['target'] ) ) {
+			$target[0] = $options['target'];
+		} else {
+			$target = $options['target'];
+		}
+		return $target;
+	}
 }

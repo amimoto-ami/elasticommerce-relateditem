@@ -92,14 +92,7 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function search_target_render() {
-		$options = get_option( 'escr_settings' );
-		if ( ! isset( $options['target'] ) ) {
-			$target = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
-		} elseif ( ! is_array( $options['target'] ) ) {
-			$target[0] = $options['target'];
-		} else {
-			$target = $options['target'];
-		}
+		$target = $this->get_elasticsearch_target();
 		$default_target_list = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
 		$size = count( $default_target_list );
 		echo "<select name='escr_settings[target][]' size='{$size}' multiple>";

@@ -63,10 +63,11 @@ class ESCR_Searcher extends ESCR_Base {
 			if ( is_wp_error( $es_endpoint ) ) {
 				return $es_endpoint;
 			}
-			$search_types = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+			$search_types = $this->get_elasticsearch_target();
 			$search_types = apply_filters( 'escr_search_types', $search_types );
 			$ids = [];
 			foreach( $search_types as $key => $search_type ) {
+				var_dump($search_type);
 				$result = $this->_get_elasticsearch_result( $es_endpoint, $search_type );
 				if ( ! empty( $result ) && ! is_wp_error( $result ) ) {
 					$ids = array_merge( $ids, $this->_parse_elasticsearch_result( $result ) );
