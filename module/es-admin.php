@@ -28,11 +28,48 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function add_admin_menu() {
-
+		add_options_page( 'WP Elasticsearch', 'WP Elasticsearch', 'manage_options', 'wp_elasticsearch', array( $this, 'wpels_options_page' ) );
 	}
 
 	public function settings_init() {
+		register_setting( 'wpElasticsearch', 'wpels_settings' );
 
+		add_settings_section(
+			'wpels_wpElasticsearch_section',
+			__( '', 'wp-elasticsearch' ),
+			array( $this, 'escr_settings_section_callback' ),
+			'wpElasticsearch'
+		);
+
+		add_settings_field(
+			'endpoint',
+			__( 'Endpoint', 'wp-elasticsearch' ),
+			array( $this, 'endpoint_render' ),
+			'wpElasticsearch',
+			'wpels_wpElasticsearch_section'
+		);
+
+	}
+	public function endpoint_render() {
+		$options = get_option( 'wpels_settings' );
+		echo "<input type='text' name='wpels_settings[endpoint]' value='". $options['endpoint']. "'>";
+	}
+
+	public function escr_settings_section_callback() {
+
+		echo __( '', 'wp-elasticsearch' );
+
+	}
+
+
+	public function wpels_options_page() {
+
+		echo "<form action='options.php' method='post'>";
+		echo '<h2>WP Elasticsearch</h2>';
+		settings_fields( 'wpElasticsearch' );
+		do_settings_sections( 'wpElasticsearch' );
+		submit_button();
+		echo '</form>';
 	}
 
 	public function update_related_product( $new_status, $old_status, $post ) {
