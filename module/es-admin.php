@@ -25,56 +25,12 @@ class ESCR_Admin extends ESCR_Base {
 		register_widget( 'ESC_RelatedItems' );
 	}
 
-	private function get_term_name_list( $terms ) {
-		foreach ( $terms as $key => $value ) {
-			$term_name_list[] = $value->name;
-		}
-		return $term_name_list;
-	}
-
 	public function escr_import( $new_status, $old_status, $post ) {
-		if ( 'product' == $post->post_type ) {
-			$ID = $post->ID;
-			$Product = wc_get_product( $ID );
-			if ( $this->is_search_target( $Product ) ) {
-				$data['title'] = $Product->post->post_title;
-				$data['content'] = $Product->post->post_content;
-				$data['excerpt'] = $Product->post->post_excerpt;
-	 			$data['sale_price'] = $Product->get_sale_price( );
-				$data['regular_price'] = $Product->get_regular_price( );
-				$data['price'] = $Product->get_price( );
-				$data['display_price'] = $Product->get_display_price();
-				$data['rate'] = $Product->get_average_rating();
-				$data['tag'] = $this->get_term_name_list( get_the_terms($ID, 'product_tag') );
-				$data['cat'] = $this->get_term_name_list( get_the_terms($ID, 'product_cat') );
-				$data['attr'] = $Product->get_attributes();
-			}
-
-		}
 		if ( ! $this->is_import( $new_status , $old_status ) ) {
 			return;
 		}
-
-		//Dev now...
-		$item_id_list = ['2182','2180','2179','2166','2181'];
-		$this->overwrite_woo_related( $ID, $item_id_list );
-
-		//debug
-		$transient_name = 'wc_related_' . $ID;
-		$related_posts  = get_transient( $transient_name );
-		var_dump($related_posts);
-	}
-
-	public function overwrite_woo_related( $ID, $item_id_list ) {
-		$transient_name = 'wc_related_' . $ID;
-		set_transient( $transient_name , $item_id_list , DAY_IN_SECONDS);
-	}
-
-	private function is_search_target( $Product ) {
-		if ( $Product->is_visible() ) {
-			return true;
-		}
-		return false;
+		$Importer = ESCR_Importer::get_instance();
+		$Importer->import_single_product( $post );
 	}
 
 	private function is_import( $new_status, $old_status ) {
