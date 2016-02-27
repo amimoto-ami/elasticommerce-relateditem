@@ -68,7 +68,7 @@ class ESCR_Searcher extends ESCR_Base {
 			$ids = [];
 			foreach( $search_types as $key => $search_type ) {
 				$result = $this->_get_elasticsearch_result( $es_endpoint, $search_type );
-				if ( ! empty( $result ) ) {
+				if ( ! empty( $result ) && ! is_wp_error( $result ) ) {
 					$ids = array_merge( $ids, $this->_parse_elasticsearch_result( $result ) );
 				}
 			}
@@ -89,7 +89,7 @@ class ESCR_Searcher extends ESCR_Base {
 		$ids = [];
 
 		foreach ( $result as $key => $value ) {
-			if ( $options['score']> $value->_score ) {
+			if ( $options['score'] > $value->_score ) {
 				continue;
 			}
 			$ids[] = $value->_id;

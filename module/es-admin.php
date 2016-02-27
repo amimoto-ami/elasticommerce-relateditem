@@ -3,6 +3,8 @@ class ESCR_Admin extends ESCR_Base {
 	private static $instance;
 	private static $text_domain;
 
+	const INDEX_ALL = 'escr_all_index';
+
 	private function __construct() {
 		self::$text_domain = ESCR_Base::text_domain();
 	}
@@ -31,15 +33,25 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function settings_init() {
-		register_setting( 'ElasticommerceRelated', 'escr_settings' );
+		$this->_register_admin_panels();
+		if ( empty( $_POST ) ) {
+			return;
+		}
+		if ( isset( $_POST[ self::INDEX_ALL] ) && $_POST[ self::INDEX_ALL ] ) {
+			if ( check_admin_referer( self::INDEX_ALL, self::INDEX_ALL ) ) {
+				$this->all_update_related_product();
+			}
+		}
+	}
 
+	private function _register_admin_panels() {
+		register_setting( 'ElasticommerceRelated', 'escr_settings' );
 		add_settings_section(
 			'escr_RelatedItem_settings',
 			__( '', 'escr-relateditem' ),
 			array( $this, 'escr_settings_section_callback' ),
 			'ElasticommerceRelated'
 		);
-
 		if( ! get_option( 'wpels_settings' ) ) {
 			add_settings_field(
 				'endpoint',
@@ -49,7 +61,6 @@ class ESCR_Admin extends ESCR_Base {
 				'escr_RelatedItem_settings'
 			);
 		}
-
 		add_settings_field(
 			'score',
 			__( 'Search Score', 'escr-relateditem' ),
@@ -57,7 +68,6 @@ class ESCR_Admin extends ESCR_Base {
 			'ElasticommerceRelated',
 			'escr_RelatedItem_settings'
 		);
-
 	}
 
 	public function endpoint_render() {
@@ -84,6 +94,34 @@ class ESCR_Admin extends ESCR_Base {
 		do_settings_sections( 'ElasticommerceRelated' );
 		submit_button();
 		echo '</form>';
+		echo "<form action='' method='post'>";
+		submit_button( __( 'Import All Products', self::$text_domain ) );
+		wp_nonce_field( self::INDEX_ALL , self::INDEX_ALL , true );
+		echo '</form>';
+	}
+
+	public function all_update_related_product() {
+		$Importer = ESCR_Importer::get_instance();
+		$result = $Importer->import_all_product();
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$Searcher = ESCR_Searcher::get_instance();
+
+		$type = $this->get_index_type();
+		$query = apply_filters( 'escr-default-query', array(
+			'post_type' => $type,
+			'posts_per_page' => -1,
+		) );
+		$the_query = new WP_Query( $query );
+		while ( $the_query->have_posts() ) : $the_query->the_post();
+			$ID = get_the_ID();
+			$Product = wc_get_product( $ID );
+			$item_id_list = $Searcher->get_related_item_list( $Product->post );
+			$this->overwrite_woo_related( $ID, $item_id_list );
+		endwhile;
+		return true;
 	}
 
 	public function update_related_product( $new_status, $old_status, $post ) {
