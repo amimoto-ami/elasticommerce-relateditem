@@ -48,15 +48,6 @@ class ESCR_Importer extends ESCR_Base {
 
 		$json = $this->convert_json( $data );
 		return $this->import_products( $data );
-
-		$item_id_list = $this->get_related_item_list( $json );
-		//Dev now...
-		$this->overwrite_woo_related( $ID, $item_id_list );
-
-		//debug
-		$transient_name = 'wc_related_' . $ID;
-		$related_posts  = get_transient( $transient_name );
-		var_dump($related_posts);
 	}
 
 	private function _get_mapping() {
@@ -90,8 +81,7 @@ class ESCR_Importer extends ESCR_Base {
 
 	private function import_products( $dataList ) {
 		try {
-			$options = get_option( 'escr_settings' );
-			$options['endpoint'] = 'search-woo-recommend-3rcvzwri7rddinzmsty7b3gdsy.ap-northeast-1.es.amazonaws.com';
+			$options = $this->get_elasticsearch_endpoint();
 			$client = $this->create_client( $options );
 			if ( ! $client ) {
 				throw new Exception( 'Couldn\'t make Elasticsearch Client. Parameter is not enough.' );

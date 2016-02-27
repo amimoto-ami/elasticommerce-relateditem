@@ -41,8 +41,7 @@ class ESCR_Searcher extends ESCR_Base {
 
 	private function _create_elasticsearch_endpoint( $post ) {
 		try {
-			$options = get_option( 'escr_settings' );
-			$options['endpoint'] = 'search-woo-recommend-3rcvzwri7rddinzmsty7b3gdsy.ap-northeast-1.es.amazonaws.com';
+			$options = $this->get_elasticsearch_endpoint();
 			$url = parse_url( home_url() );
 			if ( ! $url ) {
 				throw new Exception( 'home_url() is disabled.' );

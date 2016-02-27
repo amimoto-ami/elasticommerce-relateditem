@@ -19,10 +19,20 @@ class ESCR_Admin extends ESCR_Base {
 	public function init() {
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
 		add_action( 'transition_post_status' , array( $this, 'update_related_product' ) , 10 , 3 );
+		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'settings_init' ) );
 	}
 
 	public function escr_register_widgets() {
 		register_widget( 'ESC_RelatedItems' );
+	}
+
+	public function add_admin_menu() {
+
+	}
+
+	public function settings_init() {
+
 	}
 
 	public function update_related_product( $new_status, $old_status, $post ) {
@@ -31,6 +41,8 @@ class ESCR_Admin extends ESCR_Base {
 		}
 		$Importer = ESCR_Importer::get_instance();
 		$result = $Importer->import_all_product();
+		//@TODO:全商品のインデックス登録は専用ボタンをつけたい
+		//@TODO:記事更新時のインデックスはその記事だけにしたい
 		//$result = $Importer->import_single_product( $post );
 		if ( is_wp_error( $result ) ) {
 			return $result;
