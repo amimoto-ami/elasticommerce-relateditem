@@ -68,6 +68,14 @@ class ESCR_Admin extends ESCR_Base {
 			'ElasticommerceRelated',
 			'escr_RelatedItem_settings'
 		);
+
+		add_settings_field(
+			'target',
+			__( 'Search Target Fields', 'escr-relateditem' ),
+			array( $this, 'search_target_render' ),
+			'ElasticommerceRelated',
+			'escr_RelatedItem_settings'
+		);
 	}
 
 	public function endpoint_render() {
@@ -82,6 +90,29 @@ class ESCR_Admin extends ESCR_Base {
 		}
 		echo "<input type='text' name='escr_settings[score]' value='". $options['score']. "'>";
 	}
+
+	public function search_target_render() {
+		$options = get_option( 'escr_settings' );
+		if ( ! isset( $options['target'] ) ) {
+			$target = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+		} elseif ( ! is_array( $options['target'] ) ) {
+			$target[0] = $options['target'];
+		} else {
+			$target = $options['target'];
+		}
+		$default_target_list = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+		$size = count( $default_target_list );
+		echo "<select name='escr_settings[target][]' size='{$size}' multiple>";
+		foreach( $default_target_list as $key => $default_target ) {
+			$is_selected = '';
+			if ( false !== array_search( $default_target, $target ) ) {
+				$is_selected = 'selected';
+			}
+			echo "<option value='{$default_target}' {$is_selected}>{$default_target}</option>";
+		}
+		echo "</select>";
+	}
+
 	public function escr_settings_section_callback() {
 		echo __( '', 'escr-relateditem' );
 	}
