@@ -59,6 +59,35 @@ class ESCR_Importer extends ESCR_Base {
 		var_dump($related_posts);
 	}
 
+	private function _get_mapping() {
+		$mapping = array(
+			'title' => array(
+				'type' => 'string',
+				'analyzer' => 'kuromoji',
+			),
+			'content' => array(
+				'type' => 'string',
+				'analyzer' => 'kuromoji',
+			),
+			'excerpt' => array(
+				'type' => 'string',
+				'analyzer' => 'kuromoji',
+			),
+			'tag' => array(
+				'type' => 'string',
+				'analyzer' => 'kuromoji',
+			),
+			'cat' => array(
+				'type' => 'string',
+				'analyzer' => 'kuromoji',
+			),
+			'display_price' => array(
+				'type' => 'string',
+			),
+		);
+		return apply_filters( 'escr_mapping', $mapping );
+	}
+
 	private function import_products( $dataList ) {
 		try {
 			$options = get_option( 'escr_settings' );
@@ -75,6 +104,7 @@ class ESCR_Importer extends ESCR_Base {
 			$index = $client->getIndex( $url['host'] );
 			$index->create( array(), true );
 			$type = $index->getType( 'product' );
+			$type->setMapping( $this->_get_mapping() );
 
 			foreach ( $dataList as $ID => $data ) {
 				$docs[] = $type->createDocument( (int) $ID , $data );
@@ -117,15 +147,16 @@ class ESCR_Importer extends ESCR_Base {
 			$data['title'] = $Product->post->post_title;
 			$data['content'] = wp_strip_all_tags( $Product->post->post_content, true );
 			$data['excerpt'] = wp_strip_all_tags( $Product->post->post_excerpt, true );
-			$data['sale_price'] = $Product->get_sale_price( );
-			$data['regular_price'] = $Product->get_regular_price( );
-			$data['price'] = $Product->get_price( );
 			$data['display_price'] = $Product->get_display_price();
 			$data['rate'] = $Product->get_average_rating();
 			$data['tag'] = $this->get_term_name_list( get_the_terms($ID, 'product_tag') );
 			$data['cat'] = $this->get_term_name_list( get_the_terms($ID, 'product_cat') );
-			//@TODO バリエーション名に対応する
-			//$data['attr'] = $Product->get_attributes();
+			/*@TODO バリエーション名に対応する
+			$data['attr'] = $Product->get_attributes();
+			$data['sale_price'] = $Product->get_sale_price( );
+			$data['regular_price'] = $Product->get_regular_price( );
+			$data['price'] = $Product->get_price( );
+			*/
 		}
 		return apply_filters( 'escr_create_data', $data );
 	}

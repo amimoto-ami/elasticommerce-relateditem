@@ -22,7 +22,7 @@ class ESCR_Searcher extends ESCR_Base {
 		return self::$instance;
 	}
 
-	public function get_related_item_list() {
+	public function get_related_item_list( $post ) {
 		$item_id_list = ['2182','2180','2179','2166','2181'];
 		return $item_id_list;
 	}

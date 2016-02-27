@@ -30,14 +30,14 @@ class ESCR_Admin extends ESCR_Base {
 			return;
 		}
 		$Importer = ESCR_Importer::get_instance();
-		//$Importer->import_all_product();
+		//$result = $Importer->import_all_product();
 		$result = $Importer->import_single_product( $post );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
 		$Searcher = ESCR_Searcher::get_instance();
-		$item_id_list = $Searcher->get_related_item_list();
+		$item_id_list = $Searcher->get_related_item_list( $post );
 		$this->overwrite_woo_related( $post->ID, $item_id_list );
 	}
 
