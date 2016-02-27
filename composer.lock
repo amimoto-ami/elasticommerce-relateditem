@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6376887d8837b39831a158340cd88a56",
-    "content-hash": "6e223b78ad5047475e3a6e5fe32a0fda",
+    "hash": "2e1e53c10815fc0d445090e87661c201",
+    "content-hash": "b9eeb3cbc54541604972bd11769b196b",
     "packages": [
         {
             "name": "psr/log",
@@ -47,16 +47,16 @@
         },
         {
             "name": "ruflin/elastica",
-            "version": "dev-master",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ruflin/Elastica.git",
-                "reference": "ed7605ac68020f67ef34b8e4740ebe20f88600f2"
+                "reference": "2c881b1146b3f6a36d4db5f877341c9b186dc913"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/ed7605ac68020f67ef34b8e4740ebe20f88600f2",
-                "reference": "ed7605ac68020f67ef34b8e4740ebe20f88600f2",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/2c881b1146b3f6a36d4db5f877341c9b186dc913",
+                "reference": "2c881b1146b3f6a36d4db5f877341c9b186dc913",
                 "shasum": ""
             },
             "require": {
@@ -98,15 +98,13 @@
                 "client",
                 "search"
             ],
-            "time": "2016-02-24 01:48:51"
+            "time": "2016-01-30 20:39:28"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ruflin/elastica": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

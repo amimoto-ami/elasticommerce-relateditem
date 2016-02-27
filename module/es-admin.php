@@ -30,6 +30,7 @@ class ESCR_Admin extends ESCR_Base {
 			return;
 		}
 		$Importer = ESCR_Importer::get_instance();
+		//$Importer->import_all_product();
 		$Importer->import_single_product( $post );
 	}
 
