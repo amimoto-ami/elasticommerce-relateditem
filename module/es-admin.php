@@ -40,13 +40,15 @@ class ESCR_Admin extends ESCR_Base {
 			'ElasticommerceRelated'
 		);
 
-		add_settings_field(
-			'endpoint',
-			__( 'Endpoint', 'escr-relateditem' ),
-			array( $this, 'endpoint_render' ),
-			'ElasticommerceRelated',
-			'escr_RelatedItem_settings'
-		);
+		if( ! get_option( 'wpels_settings' ) ) {
+			add_settings_field(
+				'endpoint',
+				__( 'Endpoint', 'escr-relateditem' ),
+				array( $this, 'endpoint_render' ),
+				'ElasticommerceRelated',
+				'escr_RelatedItem_settings'
+			);
+		}
 
 	}
 	public function endpoint_render() {
