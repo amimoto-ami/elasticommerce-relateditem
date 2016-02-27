@@ -1,7 +1,5 @@
 <?php
 use Elastica\Client;
-use Elastica\Query;
-use Elastica\Query\QueryString;
 use Elastica\Type\Mapping;
 use Elastica\Bulk;
 
@@ -23,8 +21,9 @@ class ESCR_Importer extends ESCR_Base {
 	}
 
 	public function import_all_product() {
+		$type = $this->get_index_type();
 		$query = apply_filters( 'escr-default-query', array(
-			'post_type' => 'product',
+			'post_type' => $type,
 			'posts_per_page' => -1,
 		) );
 		$the_query = new WP_Query( $query );
@@ -36,7 +35,8 @@ class ESCR_Importer extends ESCR_Base {
 	}
 
 	public function import_single_product( $post ) {
-		if ( 'product' != $post->post_type ) {
+		$type = $this->get_index_type();
+		if ( $type != $post->post_type ) {
 			return;
 		}
 
@@ -103,7 +103,7 @@ class ESCR_Importer extends ESCR_Base {
 			}
 			$index = $client->getIndex( $url['host'] );
 			$index->create( array(), true );
-			$type = $index->getType( 'product' );
+			$type = $index->getType( $this->get_index_type() );
 			$type->setMapping( $this->_get_mapping() );
 
 			foreach ( $dataList as $ID => $data ) {

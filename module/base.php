@@ -45,4 +45,8 @@ class ESCR_Base {
 		));
 		return $client;
 	}
+
+	public function get_index_type() {
+		return apply_filters( 'escr_index_type', 'product' );
+	}
 }
