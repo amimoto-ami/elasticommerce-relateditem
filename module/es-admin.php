@@ -18,20 +18,27 @@ class ESCR_Admin extends ESCR_Base {
 
 	public function init() {
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
-		add_action( 'transition_post_status' , array( $this, 'escr_import' ) , 10 , 3 );
+		add_action( 'transition_post_status' , array( $this, 'update_related_product' ) , 10 , 3 );
 	}
 
 	public function escr_register_widgets() {
 		register_widget( 'ESC_RelatedItems' );
 	}
 
-	public function escr_import( $new_status, $old_status, $post ) {
+	public function update_related_product( $new_status, $old_status, $post ) {
 		if ( ! $this->is_import( $new_status , $old_status ) ) {
 			return;
 		}
 		$Importer = ESCR_Importer::get_instance();
 		//$Importer->import_all_product();
-		$Importer->import_single_product( $post );
+		$result = $Importer->import_single_product( $post );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$Searcher = ESCR_Searcher::get_instance();
+		$item_id_list = $Searcher->get_related_item_list();
+		$this->overwrite_woo_related( $post->ID, $item_id_list );
 	}
 
 	private function is_import( $new_status, $old_status ) {
@@ -46,5 +53,10 @@ class ESCR_Admin extends ESCR_Base {
 		}
 		$result = apply_filters( 'escr_is_import' , $result );
 		return $result;
+	}
+
+	private function overwrite_woo_related( $ID, $item_id_list ) {
+		$transient_name = 'wc_related_' . $ID;
+		set_transient( $transient_name , $item_id_list , DAY_IN_SECONDS);
 	}
 }

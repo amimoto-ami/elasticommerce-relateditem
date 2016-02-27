@@ -32,8 +32,7 @@ class ESCR_Importer extends ESCR_Base {
 			$ID = get_the_ID();
 			$data[ $ID ] = $this->get_product_data( $ID );
 		endwhile;
-		$this->import_all_product_to_es( $data );
-
+		return $this->import_products( $data );
 	}
 
 	public function import_single_product( $post ) {
@@ -48,10 +47,8 @@ class ESCR_Importer extends ESCR_Base {
 		}
 
 		$json = $this->convert_json( $data );
-		$result = $this->import_all_product_to_es( $data );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
+		return $this->import_products( $data );
+
 		$item_id_list = $this->get_related_item_list( $json );
 		//Dev now...
 		$this->overwrite_woo_related( $ID, $item_id_list );
@@ -62,17 +59,11 @@ class ESCR_Importer extends ESCR_Base {
 		var_dump($related_posts);
 	}
 
-	private function get_related_item_list( $json ) {
-		$item_id_list = ['2182','2180','2179','2166','2181'];
-		var_dump($json);
-		return $item_id_list;
-	}
-
-	private function import_all_product_to_es( $dataList ) {
+	private function import_products( $dataList ) {
 		try {
 			$options = get_option( 'escr_settings' );
 			$options['endpoint'] = 'search-woo-recommend-3rcvzwri7rddinzmsty7b3gdsy.ap-northeast-1.es.amazonaws.com';
-			$client = $this->_create_client( $options );
+			$client = $this->create_client( $options );
 			if ( ! $client ) {
 				throw new Exception( 'Couldn\'t make Elasticsearch Client. Parameter is not enough.' );
 			}
@@ -100,22 +91,6 @@ class ESCR_Importer extends ESCR_Base {
 			$err = new WP_Error( 'Elasticsearch Import Error', $e->getMessage() );
 			return $err;
 		}
-	}
-
-	private function _create_client( $options ) {
-		if ( empty( $options['endpoint'] ) ) {
-			return false;
-		}
-		$client = new \Elastica\Client( array(
-			'host' => $options['endpoint'],
-			'port' => 80,
-		));
-		return $client;
-	}
-
-	private function overwrite_woo_related( $ID, $item_id_list ) {
-		$transient_name = 'wc_related_' . $ID;
-		set_transient( $transient_name , $item_id_list , DAY_IN_SECONDS);
 	}
 
 	private function is_search_target( $Product ) {

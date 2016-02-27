@@ -1,4 +1,5 @@
 <?php
+use Elastica\Client;
 class ESCR_Base {
 	private static $instance;
 	private static $text_domain;
@@ -34,4 +35,14 @@ class ESCR_Base {
 		return $text_domain;
 	}
 
+	public function create_client( $options ) {
+		if ( empty( $options['endpoint'] ) ) {
+			return false;
+		}
+		$client = new \Elastica\Client( array(
+			'host' => $options['endpoint'],
+			'port' => 80,
+		));
+		return $client;
+	}
 }
