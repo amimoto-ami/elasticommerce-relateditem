@@ -52,7 +52,6 @@ class ESCR_Base {
 
 	public function get_elasticsearch_endpoint() {
 		$options = get_option( 'escr_settings' );
-		$options['endpoint'] = 'search-woo-recommend-3rcvzwri7rddinzmsty7b3gdsy.ap-northeast-1.es.amazonaws.com';
 
 		$wpels_settings = get_option( 'wpels_settings' );
 		if ( $wpels_settings ) {

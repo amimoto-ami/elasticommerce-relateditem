@@ -68,7 +68,9 @@ class ESCR_Searcher extends ESCR_Base {
 			$ids = [];
 			foreach( $search_types as $key => $search_type ) {
 				$result = $this->_get_elasticsearch_result( $es_endpoint, $search_type );
-				$ids = array_merge( $ids, $this->_parse_elasticsearch_result( $result ) );
+				if ( ! empty( $result ) ) {
+					$ids = array_merge( $ids, $this->_parse_elasticsearch_result( $result ) );
+				}
 			}
 			$ids = array_unique( $ids );
 			$ids = array_merge( $ids );
@@ -80,10 +82,14 @@ class ESCR_Searcher extends ESCR_Base {
 	}
 
 	private function _parse_elasticsearch_result( $result ) {
-		$score_limit = 0.8;
+		$options = get_option( 'escr_settings' );
+		if ( ! isset( $options['score'] ) ) {
+			$options['score'] = 0.8;
+		}
 		$ids = [];
+
 		foreach ( $result as $key => $value ) {
-			if ( $score_limit > $value->_score ) {
+			if ( $options['score']> $value->_score ) {
 				continue;
 			}
 			$ids[] = $value->_id;

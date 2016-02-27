@@ -50,12 +50,28 @@ class ESCR_Admin extends ESCR_Base {
 			);
 		}
 
+		add_settings_field(
+			'score',
+			__( 'Search Score', 'escr-relateditem' ),
+			array( $this, 'score_render' ),
+			'ElasticommerceRelated',
+			'escr_RelatedItem_settings'
+		);
+
 	}
+
 	public function endpoint_render() {
 		$options = get_option( 'escr_settings' );
 		echo "<input type='text' name='escr_settings[endpoint]' value='". $options['endpoint']. "'>";
 	}
 
+	public function score_render() {
+		$options = get_option( 'escr_settings' );
+		if ( ! isset( $options['score'] ) ) {
+			$options['score'] = 0.8;
+		}
+		echo "<input type='text' name='escr_settings[score]' value='". $options['score']. "'>";
+	}
 	public function escr_settings_section_callback() {
 		echo __( '', 'escr-relateditem' );
 	}
