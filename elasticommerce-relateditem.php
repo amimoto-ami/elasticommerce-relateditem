@@ -31,18 +31,19 @@ function escr_get_related_item_data() {
 	return $data;
 }
 
-function escr_get_related_item( $class = '') {
+function escr_get_related_item( $class = '' ) {
 	$dataList = escr_get_related_item_data();
 	if ( ! $dataList ) {
 		return '';
 	}
+	$ID = get_the_ID();
 	$html = "<ul class='escr{$class}_row'>";
 	foreach ( $dataList as $key => $data ) {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['score'] ) ) {
 			$options['score'] = 0.8;
 		}
-		if ( $options['score'] > $data->_score ) {
+		if ( $options['score'] > $data->_score || $ID == $data->_id ) {
 			continue;
 		}
 		$Product = wc_get_product( $data->_id );
@@ -60,8 +61,8 @@ function escr_get_related_item( $class = '') {
 	$html .= '</ul>';
 	return $html;
 }
-function escr_related_item() {
-	$html = escr_get_related_item();
+function escr_related_item( $class = '' ) {
+	$html = escr_get_related_item( $class );
 	echo $html;
 }
 
