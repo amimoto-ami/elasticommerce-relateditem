@@ -63,7 +63,7 @@ class ESCR_Base {
 	public function get_elasticsearch_target() {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['target'] ) ) {
-			$target = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+			$target = array( 'product_excerpt', 'product_content', 'product_display_price', 'product_cat', 'product_tag', 'product_title' );
 		} elseif ( ! is_array( $options['target'] ) ) {
 			$target[0] = $options['target'];
 		} else {

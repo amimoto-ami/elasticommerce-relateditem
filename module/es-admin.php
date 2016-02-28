@@ -107,12 +107,12 @@ class ESCR_Admin extends ESCR_Base {
 	public function search_target_render() {
 		$target = $this->get_elasticsearch_target();
 		$default_target_list = array(
-			'excerpt' => __( 'Product Short Description', 'woocommerce' ),
-			'content' => __( 'Product Description', 'woocommerce' ),
-			'display_price' => __( 'Prices', 'woocommerce' ),
-			'cat' => __( 'Product Category', 'woocommerce' ),
-			'tag' => __( 'Product Tag', 'woocommerce' ),
-			'title' => __( 'Product Name', 'woocommerce' )
+			'product_excerpt' => __( 'Product Short Description', 'woocommerce' ),
+			'product_content' => __( 'Product Description', 'woocommerce' ),
+			'product_display_price' => __( 'Prices', 'woocommerce' ),
+			'product_cat' => __( 'Product Category', 'woocommerce' ),
+			'product_tag' => __( 'Product Tag', 'woocommerce' ),
+			'product_title' => __( 'Product Name', 'woocommerce' )
 		);
 		$size = count( $default_target_list );
 		echo "<select name='escr_settings[target][]' size='{$size}' multiple>";
