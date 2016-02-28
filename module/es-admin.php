@@ -150,7 +150,7 @@ class ESCR_Admin extends ESCR_Base {
 		while ( $the_query->have_posts() ) : $the_query->the_post();
 			$ID = get_the_ID();
 			$Product = wc_get_product( $ID );
-			$item_id_list = $Searcher->get_related_item_list( $Product->post );
+			$item_id_list = $Searcher->get_related_item_id_list( $Product->post );
 			$this->overwrite_woo_related( $ID, $item_id_list );
 		endwhile;
 		return true;
@@ -170,7 +170,7 @@ class ESCR_Admin extends ESCR_Base {
 		}
 
 		$Searcher = ESCR_Searcher::get_instance();
-		$item_id_list = $Searcher->get_related_item_list( $post );
+		$item_id_list = $Searcher->get_related_item_id_list( $post );
 		if ( is_wp_error( $item_id_list ) ) {
 			return $item_id_list;
 		}

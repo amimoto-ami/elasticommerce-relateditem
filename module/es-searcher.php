@@ -59,6 +59,50 @@ class ESCR_Searcher extends ESCR_Base {
 
 	public function get_related_item_list( $post ) {
 		try {
+			$search_types = $this->get_elasticsearch_target();
+			$search_types = apply_filters( 'escr_search_types', $search_types );
+
+			$options = $this->get_elasticsearch_endpoint();
+			$url = parse_url( home_url() );
+			if ( ! $url ) {
+				throw new Exception( 'home_url() is disabled.' );
+			}
+			$es_endpoint = 'https://' . $options['endpoint'] . '/';
+			$es_endpoint .= $url['host']. '/'. $this->get_index_type(). '/_search';
+
+			$text = wp_strip_all_tags( $post->post_content, true );
+			$mapping = array(
+				'query' => array(
+					'more_like_this' => array(
+						'fields' => $search_types,
+						'like_text' => $text,
+						'min_term_freq' => 1,
+						'min_doc_freq' => 1,
+						'percent_terms_to_match' => apply_filters( 'escr_widget_score', 0.5 ),
+						'analyzer' => 'kuromoji',
+					),
+				),
+			);
+			$arg = array(
+				'body' => json_encode( $mapping, JSON_UNESCAPED_UNICODE ),
+			);
+			$result = wp_remote_get( $es_endpoint, $arg );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			} elseif ( 'OK' != $result['response']['message'] ) {
+				throw new Exception( $result['response']['code']. ':'. $result['response']['message'] );
+			}
+			$data = json_decode( $result['body'] );
+			$hits = $data->hits->hits;
+			return $hits;
+		} catch ( Exception $e ) {
+			$err = new WP_Error( 'Elasticsearch Search Error', $e->getMessage() );
+			return $err;
+		}
+	}
+
+	public function get_related_item_id_list( $post ) {
+		try {
 			$es_endpoint = $this->_create_elasticsearch_endpoint( $post );
 			if ( is_wp_error( $es_endpoint ) ) {
 				return $es_endpoint;
@@ -67,7 +111,6 @@ class ESCR_Searcher extends ESCR_Base {
 			$search_types = apply_filters( 'escr_search_types', $search_types );
 			$ids = [];
 			foreach( $search_types as $key => $search_type ) {
-				var_dump($search_type);
 				$result = $this->_get_elasticsearch_result( $es_endpoint, $search_type );
 				if ( ! empty( $result ) && ! is_wp_error( $result ) ) {
 					$ids = array_merge( $ids, $this->_parse_elasticsearch_result( $result ) );
@@ -98,4 +141,24 @@ class ESCR_Searcher extends ESCR_Base {
 		return $ids;
 	}
 
+	public function get_related_item_data() {
+		$ID = get_the_ID();
+		if ( ! $ID ) {
+			return false;
+		}
+		$post = get_post( $ID );
+		$data = $this->get_related_item_list( $post );
+		if ( is_wp_error( $data ) ) {
+			$msg = $data->get_error_messages();
+			if ( is_array( $msg ) ) {
+				foreach( $msg as $value ) {
+					error_log( $value );
+				}
+			} else {
+				error_log( $msg );
+			}
+			return null;
+		}
+		return $data;
+	}
 }

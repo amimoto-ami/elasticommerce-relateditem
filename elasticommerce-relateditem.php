@@ -24,25 +24,48 @@ if ( ! escr_is_activate_woocommerce() ) {
 define( 'ESCR_ROOT', __FILE__ );
 require_once 'vendor/autoload.php';
 
-$ESCR_Base = ESCR_Base::get_instance();
-$ESCR_Admin = ESCR_Admin::get_instance();
-$ESCR_Admin->init();
-
+function escr_get_related_item_data() {
+	//@TODO:singlarページのみ動作させる
+	$ESCR_Searcher = ESCR_Searcher::get_instance();
+	$data = $ESCR_Searcher->get_related_item_data();
+	return $data;
+}
+function escr_get_related_item() {
+	$dataList = escr_get_related_item_data();
+	if ( ! $dataList ) {
+		return '';
+	}
+	$html = "<ul class='escr_widget_row'>";
+	foreach ( $dataList as $key => $data ) {
+		$options = get_option( 'escr_settings' );
+		if ( ! isset( $options['score'] ) ) {
+			$options['score'] = 0.8;
+		}
+		if ( $options['score'] > $data->_score ) {
+			continue;
+		}
+		$Product = wc_get_product( $data->_id );
+		$url = $Product->get_permalink();
+		$title = $Product->post->post_title;
+		$price = $Product->get_price_html();
+		$html .= "<li class='escr_widget_item'>";
+		$html .= "<a href='{$url}'>";
+		$html .= "<p><b>$title</b><br/>$price</p>";
+		//@TODO:表示項目を選択可能にする
+		//@TODO:Tag/Categoryの処理
+		//$html .= "<p>$source->excerpt</p>";
+		//$html .= $source->content;
+		$html .= '</a></li>';
+	}
+	$html .= '</ul>';
+	return $html;
+}
 function escr_related_item() {
-	$data = escr_get_related_item();
+	$html = escr_get_related_item();
 	echo $html;
 }
 
-function escr_get_related_item() {
-	$data = escr_get_related_item_data();
-	$html = "<p>{$data}</p>";
-	return $html;
-}
 
-function escr_get_related_item_data() {
-	$data = 'hoge';
-	return $data;
-}
 
 class ESCR_Error {
 	public function admin_notices() {
@@ -76,9 +99,12 @@ function escr_is_activate_woocommerce() {
 	$activePlugins = get_option('active_plugins');
 	$plugin = 'woocommerce/woocommerce.php';
 	if ( ! array_search( $plugin, $activePlugins ) && file_exists( WP_PLUGIN_DIR. '/'. $plugin ) ) {
-		var_dump('err');
 		return false;
 	} else {
 		return true;
 	}
 }
+
+$ESCR_Base = ESCR_Base::get_instance();
+$ESCR_Admin = ESCR_Admin::get_instance();
+$ESCR_Admin->init();
