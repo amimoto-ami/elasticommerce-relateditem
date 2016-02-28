@@ -30,12 +30,13 @@ function escr_get_related_item_data() {
 	$data = $ESCR_Searcher->get_related_item_data();
 	return $data;
 }
-function escr_get_related_item() {
+
+function escr_get_related_item( $class = '') {
 	$dataList = escr_get_related_item_data();
 	if ( ! $dataList ) {
 		return '';
 	}
-	$html = "<ul class='escr_widget_row'>";
+	$html = "<ul class='escr{$class}_row'>";
 	foreach ( $dataList as $key => $data ) {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['score'] ) ) {
@@ -48,14 +49,13 @@ function escr_get_related_item() {
 		$url = $Product->get_permalink();
 		$title = $Product->post->post_title;
 		$price = $Product->get_price_html();
-		$html .= "<li class='escr_widget_item'>";
-		$html .= "<a href='{$url}'>";
-		$html .= "<p><b>$title</b><br/>$price</p>";
+		$html .= "<li class='escr{$class}_item'>";
+		$html .= "<p><a href='{$url}'>{$title}</a><br/>{$price}</p>";
 		//@TODO:表示項目を選択可能にする
 		//@TODO:Tag/Categoryの処理
 		//$html .= "<p>$source->excerpt</p>";
 		//$html .= $source->content;
-		$html .= '</a></li>';
+		$html .= '</li>';
 	}
 	$html .= '</ul>';
 	return $html;
