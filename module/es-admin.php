@@ -18,6 +18,7 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function init() {
+
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
 		add_action( 'transition_post_status' , array( $this, 'update_related_product' ) , 10 , 3 );
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -93,15 +94,22 @@ class ESCR_Admin extends ESCR_Base {
 
 	public function search_target_render() {
 		$target = $this->get_elasticsearch_target();
-		$default_target_list = array( 'excerpt', 'content', 'display_price', 'cat', 'tag', 'title' );
+		$default_target_list = array(
+			'excerpt' => __( 'Product Short Description', 'woocommerce' ),
+			'content' => __( 'Product Description', 'woocommerce' ),
+			'display_price' => __( 'Prices', 'woocommerce' ),
+			'cat' => __( 'Product Category', 'woocommerce' ),
+			'tag' => __( 'Product Tag', 'woocommerce' ),
+			'title' => __( 'Product Name', 'woocommerce' )
+		);
 		$size = count( $default_target_list );
 		echo "<select name='escr_settings[target][]' size='{$size}' multiple>";
 		foreach( $default_target_list as $key => $default_target ) {
 			$is_selected = '';
-			if ( false !== array_search( $default_target, $target ) ) {
+			if ( false !== array_search( $key, $target ) ) {
 				$is_selected = 'selected';
 			}
-			echo "<option value='{$default_target}' {$is_selected}>{$default_target}</option>";
+			echo "<option value='{$key}' {$is_selected}>{$default_target}</option>";
 		}
 		echo "</select>";
 	}
