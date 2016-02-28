@@ -49,33 +49,45 @@ class ESCR_Admin extends ESCR_Base {
 		register_setting( 'ElasticommerceRelated', 'escr_settings' );
 		add_settings_section(
 			'escr_RelatedItem_settings',
-			__( '', 'escr-relateditem' ),
+			__( '', self::$text_domain ),
 			array( $this, 'escr_settings_section_callback' ),
 			'ElasticommerceRelated'
 		);
 		if( ! get_option( 'wpels_settings' ) ) {
 			add_settings_field(
 				'endpoint',
-				__( 'Endpoint', 'escr-relateditem' ),
+				__( 'Endpoint', self::$text_domain ),
 				array( $this, 'endpoint_render' ),
 				'ElasticommerceRelated',
 				'escr_RelatedItem_settings'
 			);
 		}
+		add_settings_section(
+			'escr_RelatedScore_settings',
+			__( 'Search Score Setting', self::$text_domain ),
+			array( $this, 'escr_settings_score_section_callback' ),
+			'ElasticommerceRelated'
+		);
 		add_settings_field(
 			'score',
-			__( 'Search Score', 'escr-relateditem' ),
+			__( 'Search Score <br/>( Min 0.0 ~ Max 1.0 )', self::$text_domain ),
 			array( $this, 'score_render' ),
 			'ElasticommerceRelated',
-			'escr_RelatedItem_settings'
+			'escr_RelatedScore_settings'
+		);
+		add_settings_section(
+			'escr_RelatedTarget_settings',
+			__( 'Search Target Setting', self::$text_domain ),
+			array( $this, 'escr_settings_target_section_callback' ),
+			'ElasticommerceRelated'
 		);
 
 		add_settings_field(
 			'target',
-			__( 'Search Target Fields', 'escr-relateditem' ),
+			__( 'Select Search Target <br/>( Multiple )', self::$text_domain ),
 			array( $this, 'search_target_render' ),
 			'ElasticommerceRelated',
-			'escr_RelatedItem_settings'
+			'escr_RelatedTarget_settings'
 		);
 	}
 
@@ -115,9 +127,16 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function escr_settings_section_callback() {
-		echo __( '', 'escr-relateditem' );
+		echo __( '', self::$text_domain );
 	}
 
+	public function escr_settings_score_section_callback() {
+		echo __( 'You can exchange Search Score.', self::$text_domain );
+	}
+
+	public function escr_settings_target_section_callback() {
+		echo __( 'You can select search target fields.', self::$text_domain );
+	}
 
 	public function escr_related_options() {
 		echo "<form action='options.php' method='post'>";
