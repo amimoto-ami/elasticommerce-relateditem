@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Elasticommerce-relateditem
+ * Plugin Name: Elasticommerce Related Item
  * Version: 0.1-alpha
- * Description: PLUGIN DESCRIPTION HERE
- * Author: YOUR NAME HERE
+ * Description: You Can get Good Related Item List powered by Elasticsearch.
+ * Author: hideokamoto
  * Author URI: YOUR SITE HERE
  * Plugin URI: PLUGIN SITE HERE
  * Text Domain: elasticommerce-relateditem
@@ -25,9 +25,11 @@ define( 'ESCR_ROOT', __FILE__ );
 require_once 'vendor/autoload.php';
 
 function escr_get_related_item_data() {
-	//@TODO:singlarページのみ動作させる
-	$ESCR_Searcher = ESCR_Searcher::get_instance();
-	$data = $ESCR_Searcher->get_related_item_data();
+	$data = '';
+	if ( is_singular() ) {
+		$ESCR_Searcher = ESCR_Searcher::get_instance();
+		$data = $ESCR_Searcher->get_related_item_data();
+	}
 	return $data;
 }
 
@@ -65,8 +67,6 @@ function escr_related_item( $class = '' ) {
 	$html = escr_get_related_item( $class );
 	echo $html;
 }
-
-
 
 class ESCR_Error {
 	public function admin_notices() {
