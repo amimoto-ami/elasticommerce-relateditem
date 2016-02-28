@@ -106,6 +106,11 @@ function escr_is_activate_woocommerce() {
 	}
 }
 
-$ESCR_Base = ESCR_Base::get_instance();
-$ESCR_Admin = ESCR_Admin::get_instance();
-$ESCR_Admin->init();
+if ( php_sapi_name() == 'cli' ) {
+	if ( defined('WP_CLI') && WP_CLI ) {
+		include __DIR__ . '/wp-esc.php';
+	}
+} else {
+	$ESCR_Admin = ESCR_Admin::get_instance();
+	$ESCR_Admin->init();
+}
