@@ -52,27 +52,27 @@ class ESCR_Importer extends ESCR_Base {
 
 	private function _get_mapping() {
 		$mapping = array(
-			'title' => array(
+			'product_title' => array(
 				'type' => 'string',
 				'analyzer' => 'kuromoji',
 			),
-			'content' => array(
+			'product_content' => array(
 				'type' => 'string',
 				'analyzer' => 'kuromoji',
 			),
-			'excerpt' => array(
+			'product_excerpt' => array(
 				'type' => 'string',
 				'analyzer' => 'kuromoji',
 			),
-			'tag' => array(
+			'product_tag' => array(
 				'type' => 'string',
 				'analyzer' => 'kuromoji',
 			),
-			'cat' => array(
+			'product_cat' => array(
 				'type' => 'string',
 				'analyzer' => 'kuromoji',
 			),
-			'display_price' => array(
+			'product_display_price' => array(
 				'type' => 'string',
 			),
 		);
@@ -134,13 +134,13 @@ class ESCR_Importer extends ESCR_Base {
 		$Product = wc_get_product( $ID );
 		$data = '';
 		if ( $this->is_search_target( $Product ) ) {
-			$data['title'] = $Product->post->post_title;
-			$data['content'] = wp_strip_all_tags( $Product->post->post_content, true );
-			$data['excerpt'] = wp_strip_all_tags( $Product->post->post_excerpt, true );
-			$data['display_price'] = $Product->get_display_price();
-			$data['rate'] = $Product->get_average_rating();
-			$data['tag'] = $this->get_term_name_list( get_the_terms($ID, 'product_tag') );
-			$data['cat'] = $this->get_term_name_list( get_the_terms($ID, 'product_cat') );
+			$data['product_title'] = $Product->post->post_title;
+			$data['product_content'] = wp_strip_all_tags( $Product->post->post_content, true );
+			$data['product_excerpt'] = wp_strip_all_tags( $Product->post->post_excerpt, true );
+			$data['product_display_price'] = $Product->get_display_price();
+			$data['product_rate'] = $Product->get_average_rating();
+			$data['product_tag'] = $this->get_term_name_list( get_the_terms($ID, 'product_tag') );
+			$data['product_cat'] = $this->get_term_name_list( get_the_terms($ID, 'product_cat') );
 			/*@TODO バリエーション名に対応する
 			$data['attr'] = $Product->get_attributes();
 			$data['sale_price'] = $Product->get_sale_price( );
