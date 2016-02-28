@@ -121,7 +121,7 @@ class ESCR_Importer extends ESCR_Base {
 	}
 
 	private function get_term_name_list( $terms ) {
-		if ( ! $terms ) {
+		if ( ! $terms || is_wp_error( $terms ) ) {
 			return;
 		}
 		foreach ( $terms as $key => $value ) {
