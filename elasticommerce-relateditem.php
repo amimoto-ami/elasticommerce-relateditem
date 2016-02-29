@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Elasticommerce Related Item
- * Version: 0.1-alpha
+ * Version: 0.1
  * Description: You Can get Good Related Item List powered by Elasticsearch.
  * Author: hideokamoto
- * Author URI: YOUR SITE HERE
- * Plugin URI: PLUGIN SITE HERE
+ * Author URI: https://profiles.wordpress.org/hideokamoto
+ * Plugin URI: https://github.com/megumiteam/elasticommerce-related-item
  * Text Domain: elasticommerce-relateditem
  * Domain Path: /languages
  * @package Elasticommerce-relateditem
