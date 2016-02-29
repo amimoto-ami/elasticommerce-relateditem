@@ -21,7 +21,15 @@ class ESCR_Admin extends ESCR_Base {
 
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
 		add_action( 'transition_post_status' , array( $this, 'update_related_product' ) , 10 , 3 );
-		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+
+		$activePlugins = get_option('active_plugins');
+		$plugin = 'woocommerce/woocommerce.php';
+		if ( array_search( $plugin, $activePlugins ) && file_exists( WP_PLUGIN_DIR. '/'. $plugin ) ) {
+			add_action( 'wpels_after_setting_form', array( $this, 'escr_related_options' ) );
+		} else {
+			add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		}
+
 		add_action( 'admin_init', array( $this, 'settings_init' ) );
 	}
 
