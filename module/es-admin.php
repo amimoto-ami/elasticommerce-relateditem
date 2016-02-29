@@ -22,9 +22,7 @@ class ESCR_Admin extends ESCR_Base {
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
 		add_action( 'transition_post_status' , array( $this, 'update_related_product' ) , 10 , 3 );
 
-		$activePlugins = get_option('active_plugins');
-		$plugin = 'woocommerce/woocommerce.php';
-		if ( array_search( $plugin, $activePlugins ) && file_exists( WP_PLUGIN_DIR. '/'. $plugin ) ) {
+		if ( $this->is_activate_esc_search_form() ) {
 			add_action( 'wpels_after_setting_form', array( $this, 'escr_related_options' ) );
 		} else {
 			add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -187,13 +185,16 @@ class ESCR_Admin extends ESCR_Base {
 		if ( ! $this->is_import( $new_status , $old_status ) ) {
 			return;
 		}
-		$Importer = ESCR_Importer::get_instance();
-		$result = $Importer->import_all_product();
-		//@TODO:全商品のインデックス登録は専用ボタンをつけたい
-		//@TODO:記事更新時のインデックスはその記事だけにしたい
-		//$result = $Importer->import_single_product( $post );
-		if ( is_wp_error( $result ) ) {
-			return $result;
+
+		if ( ! $this->is_activate_esc_search_form() ) {
+			$Importer = ESCR_Importer::get_instance();
+			$result = $Importer->import_all_product();
+			//@TODO:全商品のインデックス登録は専用ボタンをつけたい
+			//@TODO:記事更新時のインデックスはその記事だけにしたい
+			//$result = $Importer->import_single_product( $post );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
 		}
 
 		$Searcher = ESCR_Searcher::get_instance();

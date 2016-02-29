@@ -52,10 +52,11 @@ class ESCR_Base {
 
 	public function get_elasticsearch_endpoint() {
 		$options = get_option( 'escr_settings' );
-
-		$wpels_settings = get_option( 'wpels_settings' );
-		if ( $wpels_settings ) {
-			$options['endpoint'] = $wpels_settings['endpoint'];
+		if ( $this->is_activate_esc_search_form() ) {
+			$wpels_settings = get_option( 'wpels_settings' );
+			if ( $wpels_settings ) {
+				$options['endpoint'] = $wpels_settings['endpoint'];
+			}
 		}
 
 		return $options;
@@ -70,5 +71,15 @@ class ESCR_Base {
 			$target = $options['target'];
 		}
 		return $target;
+	}
+
+	public function is_activate_esc_search_form() {
+		$activePlugins = get_option('active_plugins');
+		$plugin = 'elasticommerce-search-form/elasticommerce-search-form.php';
+		if ( array_search( $plugin, $activePlugins ) && file_exists( WP_PLUGIN_DIR. '/'. $plugin ) ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
