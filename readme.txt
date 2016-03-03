@@ -1,7 +1,7 @@
 === Elasticommerce Related Items ===
-Contributors: hideokamoto
+Contributors: hideokamoto,megumithemes,horike
 Tags: WooCommerce,Elasticsearch,recommend
-Requires at least: 3.0.1
+Requires at least: 4.3.1
 Tested up to: 4.3.1
 Stable tag: 0.1
 License: GPLv3
@@ -22,6 +22,10 @@ If you want to show Related Item List.You can do following action.
 *Notice*
 This plugin must need *WooCommerce Plugin* please install it.
 If *WooCommerce Plugin* is not installed or deactivated, this plugin doesn't work.
+
+*Required*
+This Plugin **can not use** Elasticsearch version 2.x.
+Please use Elasticsearch version 1.5
 
 == Installation ==
 
