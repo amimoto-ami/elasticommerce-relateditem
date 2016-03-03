@@ -36,7 +36,7 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function add_admin_menu() {
-		add_options_page( 'Elasticommerce Related Items', 'Elasticommerce Related Items', 'manage_options', 'escr_related', array( $this, 'escr_related_options' ) );
+		add_options_page( 'Elasticommerce Services', 'Elasticommerce Services', 'manage_options', 'escr_related', array( $this, 'escr_related_options' ) );
 	}
 
 	public function settings_init() {
@@ -59,7 +59,7 @@ class ESCR_Admin extends ESCR_Base {
 			array( $this, 'escr_settings_section_callback' ),
 			'ElasticommerceRelated'
 		);
-		if( ! get_option( 'wpels_settings' ) ) {
+		if ( ! $this->is_activate_esc_search_form() ) {
 			add_settings_field(
 				'endpoint',
 				__( 'Endpoint', self::$text_domain ),
@@ -99,7 +99,11 @@ class ESCR_Admin extends ESCR_Base {
 
 	public function endpoint_render() {
 		$options = get_option( 'escr_settings' );
-		echo "<input type='text' name='escr_settings[endpoint]' value='". $options['endpoint']. "'>";
+		$endpoint = '';
+		if ( isset( $options['endpoint'] ) ) {
+			$endpoint = $option['endpoint'];
+		}
+		echo "<input type='text' name='escr_settings[endpoint]' value='{$endpoint}'>";
 	}
 
 	public function score_render() {
@@ -145,8 +149,13 @@ class ESCR_Admin extends ESCR_Base {
 	}
 
 	public function escr_related_options() {
+		if ( $this->is_activate_esc_search_form() ) {
+			echo '<hr/>';
+		} else {
+			echo '<h2>Elasticommerce Services</h2>';
+		}
+		echo '<h3>Elasticommerce Related Items Settings</h3>';
 		echo "<form action='options.php' method='post'>";
-		echo '<h2>Elasticommerce Related Items</h2>';
 		settings_fields( 'ElasticommerceRelated' );
 		do_settings_sections( 'ElasticommerceRelated' );
 		submit_button();
