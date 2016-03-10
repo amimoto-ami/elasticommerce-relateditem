@@ -1,4 +1,11 @@
 <?php
+/**
+ * Import Data to Elasticsearch Class
+ *
+ * @package Elasticommerce-relateditem
+ * @author hideokamoto
+ * @since 0.1.0
+ **/
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -6,15 +13,41 @@ use Elastica\Client;
 use Elastica\Type\Mapping;
 use Elastica\Bulk;
 
+/**
+ * Data Import Class that using Elasticsearch API
+ *
+ * @class ESCR_Importer
+ * @since 0.1.0
+ */
 class ESCR_Importer extends ESCR_Base {
+	/**
+	 * Instance Class
+	 * @access private
+	 */
 	private static $instance;
+
+	/**
+	 * text domain
+	 * @access private
+	 */
 	private static $text_domain;
 
-
+	/**
+	 * Constructer
+	 * Set text domain on class
+	 *
+	 * @since 0.1.0
+	 */
 	private function __construct() {
 		self::$text_domain = ESCR_Base::text_domain();
 	}
 
+	/**
+	 * Get Instance Class
+	 *
+	 * @return ESCR_Importer
+	 * @since 0.1.0
+	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			$c = __CLASS__;
@@ -23,6 +56,12 @@ class ESCR_Importer extends ESCR_Base {
 		return self::$instance;
 	}
 
+	/**
+	 * Import All Product Data
+	 *
+	 * @since 0.1.0
+	 * @return bool / WP_Error
+	 */
 	public function import_all_product() {
 		$type = $this->get_index_type();
 		$query = apply_filters( 'escr-default-query', array(
@@ -37,22 +76,12 @@ class ESCR_Importer extends ESCR_Base {
 		return $this->import_products( $data );
 	}
 
-	public function import_single_product( $post ) {
-		$type = $this->get_index_type();
-		if ( $type != $post->post_type ) {
-			return;
-		}
-
-		$ID = $post->ID;
-		$data[ $ID ] = $this->get_product_data( $ID );
-		if ( ! $data ) {
-			return;
-		}
-
-		$json = $this->convert_json( $data );
-		return $this->import_products( $data );
-	}
-
+	/**
+	 * get Elasticsearch Mapping
+	 *
+	 * @return array
+	 * @since 0.1.0
+	 */
 	private function _get_mapping() {
 		$mapping = array(
 			'product_title' => array(
@@ -82,6 +111,14 @@ class ESCR_Importer extends ESCR_Base {
 		return apply_filters( 'escr_mapping', $mapping );
 	}
 
+	/**
+	 * send Product Data to Elasticsearch Endpoint
+	 *
+	 * @param $dataList array
+	 * @return bool / WP_Error
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	private function import_products( $dataList ) {
 		try {
 			$options = $this->get_elasticsearch_endpoint();
@@ -116,6 +153,13 @@ class ESCR_Importer extends ESCR_Base {
 		}
 	}
 
+	/**
+	 * Check Product that can add search target
+	 *
+	 * @param $Product WC_Product
+	 * @return bool
+	 * @since 0.1.0
+	 */
 	private function is_search_target( $Product ) {
 		if ( $Product->is_visible() ) {
 			return true;
@@ -123,6 +167,13 @@ class ESCR_Importer extends ESCR_Base {
 		return false;
 	}
 
+	/**
+	 * Get term name list
+	 *
+	 * @param $terms array
+	 * @return array
+	 * @since 0.1.0
+	 */
 	private function get_term_name_list( $terms ) {
 		if ( ! $terms || is_wp_error( $terms ) ) {
 			return;
@@ -133,6 +184,13 @@ class ESCR_Importer extends ESCR_Base {
 		return $term_name_list;
 	}
 
+	/**
+	 * get product data from WC_Product
+	 *
+	 * @param $ID int
+	 * @return array
+	 * @since 0.1.0
+	 */
 	private function get_product_data( $ID ) {
 		$Product = wc_get_product( $ID );
 		$data = '';
@@ -144,16 +202,18 @@ class ESCR_Importer extends ESCR_Base {
 			$data['product_rate'] = $Product->get_average_rating();
 			$data['product_tag'] = $this->get_term_name_list( get_the_terms($ID, 'product_tag') );
 			$data['product_cat'] = $this->get_term_name_list( get_the_terms($ID, 'product_cat') );
-			/*@TODO バリエーション名に対応する
-			$data['attr'] = $Product->get_attributes();
-			$data['sale_price'] = $Product->get_sale_price( );
-			$data['regular_price'] = $Product->get_regular_price( );
-			$data['price'] = $Product->get_price( );
-			*/
+			//@TODO support Variation Item
 		}
 		return apply_filters( 'escr_create_data', $data );
 	}
 
+	/**
+	 * Conveert Array to JSON
+	 *
+	 * @param $data array
+	 * @return json
+	 * @since 0.1.0
+	 */
 	private function convert_json( $data ) {
 		$json = json_encode( $data , JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 		return $json;

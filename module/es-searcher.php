@@ -1,15 +1,50 @@
 <?php
+/**
+ * Searching Elasticsearch  Class
+ *
+ * @package Elasticommerce-relateditem
+ * @author hideokamoto
+ * @since 0.1.0
+ **/
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+/**
+ * Search Class that using Elasticsearch API
+ *
+ * @class ESCR_Searcher
+ * @since 0.1.0
+ */
 class ESCR_Searcher extends ESCR_Base {
+	/**
+	 * Instance Class
+	 * @access private
+	 */
 	private static $instance;
+
+	/**
+	 * text domain
+	 * @access private
+	 */
 	private static $text_domain;
 
+	/**
+	 * Constructer
+	 * Set text domain on class
+	 *
+	 * @since 0.1.0
+	 */
 	private function __construct() {
 		self::$text_domain = ESCR_Base::text_domain();
 	}
 
+	/**
+	 * Get Instance Class
+	 *
+	 * @return ESCR_Searcher
+	 * @since 0.1.0
+	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			$c = __CLASS__;
@@ -18,6 +53,15 @@ class ESCR_Searcher extends ESCR_Base {
 		return self::$instance;
 	}
 
+	/**
+	 * send GET request to Elasticsearch API
+	 *
+	 * @param $endpoint string
+	 * @param $search string
+	 * @return object
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	private function _get_elasticsearch_result( $endpoint , $search_type ) {
 		try {
 			$endpoint .= "&mlt_fields={$search_type}";
@@ -42,6 +86,14 @@ class ESCR_Searcher extends ESCR_Base {
 		}
 	}
 
+	/**
+	 * create Elasticsearch API Path & Query
+	 *
+	 * @param $post WC_Product
+	 * @return string
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	private function _create_elasticsearch_endpoint( $post ) {
 		try {
 			$options = $this->get_elasticsearch_endpoint();
@@ -60,6 +112,14 @@ class ESCR_Searcher extends ESCR_Base {
 
 	}
 
+	/**
+	 * Get Related Item Object from Elasticsearch API
+	 *
+	 * @param $post WC_Product
+	 * @return object
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	public function get_related_item_list( $post ) {
 		try {
 			$search_types = $this->get_elasticsearch_target();
@@ -104,6 +164,14 @@ class ESCR_Searcher extends ESCR_Base {
 		}
 	}
 
+	/**
+	 * Get Related Item ID List
+	 *
+	 * @param $post WC_Product
+	 * @return array
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	public function get_related_item_id_list( $post ) {
 		try {
 			$es_endpoint = $this->_create_elasticsearch_endpoint( $post );
@@ -128,6 +196,14 @@ class ESCR_Searcher extends ESCR_Base {
 		}
 	}
 
+	/**
+	 * Parse Elasticsearch Return Parameter
+	 *
+	 * @param $result array
+	 * @return array
+	 * @since 0.1.0
+	 * @throws WP_Error
+	 */
 	private function _parse_elasticsearch_result( $result ) {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['score'] ) ) {
@@ -144,6 +220,12 @@ class ESCR_Searcher extends ESCR_Base {
 		return $ids;
 	}
 
+	/**
+	 * Get Related Item Data
+	 *
+	 * @return object
+	 * @since 0.1.0
+	 */
 	public function get_related_item_data() {
 		$ID = get_the_ID();
 		if ( ! $ID ) {

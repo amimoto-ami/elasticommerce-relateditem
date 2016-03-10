@@ -1,15 +1,43 @@
 <?php
+/**
+ * Plugin Base Class
+ *
+ * @package Elasticommerce-relateditem
+ * @author hideokamoto
+ * @since 0.1.0
+ **/
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 use Elastica\Client;
+
+/**
+ * Base Plugin class for Elasticommerce Related Item Plugin
+ *
+ * @class ESCR_Base
+ * @since 0.1.0
+ */
 class ESCR_Base {
+	/**
+	 * Instance Class
+	 * @access private
+	 */
 	private static $instance;
+
+	/**
+	 * text domain 
+	 * @access private
+	 */
 	private static $text_domain;
 
-	private function __construct() {
-	}
 
+	/**
+	 * Get Instance Class
+	 *
+	 * @return ESCR_Base
+	 * @since 0.1.0
+	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			$c = __CLASS__;
@@ -18,6 +46,12 @@ class ESCR_Base {
 		return self::$instance;
 	}
 
+	/**
+	 * Get Plugin version
+	 *
+	 * @return string
+	 * @since 0.1.0
+	 */
 	public static function version() {
 		static $version;
 
@@ -28,6 +62,12 @@ class ESCR_Base {
 		return $version;
 	}
 
+	/**
+	 * Get Plugin text_domain
+	 *
+	 * @return string
+	 * @since 0.1.0
+	 */
 	public static function text_domain() {
 		static $text_domain;
 
@@ -38,6 +78,13 @@ class ESCR_Base {
 		return $text_domain;
 	}
 
+	/**
+	 * Get Elastica Client
+	 *
+	 * @param $options: array
+	 * @return Elastica\Client
+	 * @since 0.1.0
+	 */
 	public function create_client( $options ) {
 		if ( empty( $options['endpoint'] ) ) {
 			return false;
@@ -49,10 +96,22 @@ class ESCR_Base {
 		return $client;
 	}
 
+	/**
+	 * Get Elasticsearch Index type
+	 *
+	 * @return string
+	 * @since 0.1.0
+	 */
 	public function get_index_type() {
 		return apply_filters( 'escr_index_type', 'product' );
 	}
 
+	/**
+	 * Get Elasticsearch Settings
+	 *
+	 * @return array
+	 * @since 0.1.0
+	 */
 	public function get_elasticsearch_endpoint() {
 		$options = get_option( 'escr_settings' );
 		if ( $this->is_activate_esc_search_form() ) {
@@ -64,6 +123,13 @@ class ESCR_Base {
 
 		return $options;
 	}
+
+	/**
+	 * Get Elasticsearch Search target
+	 *
+	 * @return array
+	 * @since 0.1.0
+	 */
 	public function get_elasticsearch_target() {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['target'] ) ) {
@@ -76,6 +142,12 @@ class ESCR_Base {
 		return $target;
 	}
 
+	/**
+	 * Check Elasticommerce Search Form Plugin status
+	 *
+	 * @return bool
+	 * @since 0.1.0
+	 */
 	public function is_activate_esc_search_form() {
 		$activePlugins = get_option('active_plugins');
 		$plugin = 'elasticommerce-search-form/elasticommerce-search-form.php';
