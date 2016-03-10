@@ -11,11 +11,18 @@
 * Text Domain: elasticommerce-relateditem
 * Domain Path: /languages
 * @package Elasticommerce-relateditem
+* @author hideokamoto
 *
 * Copyright: © 2009-2015 WooThemes.
 * License: GNU General Public License v3.0
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
+
+/**
+ * Check WooCommerce plugin status
+ * @version 0.2.0
+ * @return bool
+ */
 if ( ! escr_is_activate_woocommerce() ) {
 	$ESCR_Err = new ESCR_Error();
 	$msg = array(
@@ -25,11 +32,16 @@ if ( ! escr_is_activate_woocommerce() ) {
 	$e = new WP_Error( 'Elasticommerce Activation Error', $msg );
 	$ESCR_Err->show_error_message( $e );
 	add_action( 'admin_notices', array( $ESCR_Err, 'admin_notices' ) );
-	return;
+	return false;
 }
 define( 'ESCR_ROOT', __FILE__ );
 require_once 'vendor/autoload.php';
 
+/**
+ * Get Related Item Object From Elasticsearch API
+ * @since 0.1.0
+ * @return object
+ */
 function escr_get_related_item_data() {
 	$data = '';
 	if ( is_singular() ) {
@@ -39,6 +51,13 @@ function escr_get_related_item_data() {
 	return $data;
 }
 
+/**
+ * Get Related Item HTML
+ *
+ * @param string $class: add class for ul tag
+ * @since 0.1.0
+ * @return html
+ */
 function escr_get_related_item( $class = '' ) {
 	$dataList = escr_get_related_item_data();
 	if ( ! $dataList ) {
@@ -60,27 +79,48 @@ function escr_get_related_item( $class = '' ) {
 		$price = $Product->get_price_html();
 		$html .= "<li class='escr{$class}_item'>";
 		$html .= "<p><a href='{$url}'>{$title}</a><br/>{$price}</p>";
-		//@TODO:表示項目を選択可能にする
-		//@TODO:Tag/Categoryの処理
-		//$html .= "<p>$source->excerpt</p>";
-		//$html .= $source->content;
 		$html .= '</li>';
 	}
 	$html .= '</ul>';
 	return $html;
 }
+
+/**
+ * echo Related Item HTML
+ *
+ * @param string $class: add class for ul tag
+ * @since 0.1.0
+ */
 function escr_related_item( $class = '' ) {
 	$html = escr_get_related_item( $class );
 	echo $html;
 }
 
+/**
+ * Elasticommerce Related Item Error Handle class
+ *
+ * @class ESCR_Err
+ * @since 0.1.0
+ */
 class ESCR_Error {
+
+	/**
+	 * Show notice for wp-admin if have error messages
+	 *
+	 * @since 0.1.0
+	 **/
 	public function admin_notices() {
 		if ( $messageList = get_transient( 'escr-admin-errors' ) ) {
 			$this->show_notice_html( $messageList );
 		}
 	}
 
+	/**
+	 * Set error message
+	 *
+	 * @param WP_Error
+	 * @since 0.1.0
+	 */
 	public function show_error_message( $msg ) {
 		if ( ! is_wp_error( $msg ) ) {
 			$e = new WP_Error();
@@ -91,6 +131,12 @@ class ESCR_Error {
 		set_transient( 'escr-admin-errors' , $e->get_error_messages(), 10 );
 	}
 
+	/**
+	 * echo error message html
+	 *
+	 * @param array
+	 * @since 0.1.0
+	 */
 	public function show_notice_html( $messageList ) {
 		foreach ( $messageList as $key => $messages ) {
 			$html  = "<div class='error'><ul>";
@@ -102,6 +148,13 @@ class ESCR_Error {
 		echo $html;
 	}
 }
+
+/**
+ * Check WooCommerce Plugin status
+ *
+ * @since 0.1.0
+ * @return bool
+ */
 function escr_is_activate_woocommerce() {
 	$activePlugins = get_option('active_plugins');
 	$plugin = 'woocommerce/woocommerce.php';
@@ -112,6 +165,10 @@ function escr_is_activate_woocommerce() {
 	}
 }
 
+/**
+ * call WP-CLi Command Script
+ *
+ **/
 if ( php_sapi_name() == 'cli' ) {
 	if ( defined('WP_CLI') && WP_CLI ) {
 		include __DIR__ . '/wp-esc.php';
