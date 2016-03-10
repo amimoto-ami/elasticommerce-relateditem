@@ -6,6 +6,8 @@ Tested up to: 4.3.1
 Stable tag: 0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+WC requires at least: 2.5
+WC tested up to: 2.5
 
 You Can get Good Related Item List powered by Elasticsearch.
 

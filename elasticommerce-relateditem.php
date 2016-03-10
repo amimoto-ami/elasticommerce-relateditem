@@ -1,15 +1,21 @@
 <?php
 /**
- * Plugin Name: Elasticommerce Related Item
- * Version: 0.1
- * Description: You Can get Good Related Item List powered by Elasticsearch.
- * Author: hideokamoto
- * Author URI: https://profiles.wordpress.org/hideokamoto
- * Plugin URI: https://github.com/megumiteam/elasticommerce-related-item
- * Text Domain: elasticommerce-relateditem
- * Domain Path: /languages
- * @package Elasticommerce-relateditem
- */
+* Plugin Name: Elasticommerce Related Item
+* Plugin URI: http://woothemes.com/products/woocommerce-extension/
+* Description: You Can get Good Related Item List powered by Elasticsearch.
+* Version: 0.2.0
+* Author: WooThemes
+* Author URI: http://woothemes.com/
+* Developer: hideokamoto
+* Developer URI: https://profiles.wordpress.org/hideokamoto
+* Text Domain: elasticommerce-relateditem
+* Domain Path: /languages
+* @package Elasticommerce-relateditem
+*
+* Copyright: © 2009-2015 WooThemes.
+* License: GNU General Public License v3.0
+* License URI: http://www.gnu.org/licenses/gpl-3.0.html
+*/
 if ( ! escr_is_activate_woocommerce() ) {
 	$ESCR_Err = new ESCR_Error();
 	$msg = array(
