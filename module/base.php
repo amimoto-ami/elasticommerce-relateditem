@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 use Elastica\Client;
 class ESCR_Base {
 	private static $instance;

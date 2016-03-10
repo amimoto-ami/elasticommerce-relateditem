@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 use Elastica\Client;
 use Elastica\Type\Mapping;
 use Elastica\Bulk;

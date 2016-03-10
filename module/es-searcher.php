@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 class ESCR_Searcher extends ESCR_Base {
 	private static $instance;
 	private static $text_domain;

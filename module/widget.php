@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 class ESC_RelatedItems extends WP_Widget {
 	private static $text_domain;
 
