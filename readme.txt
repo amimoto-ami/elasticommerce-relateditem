@@ -1,5 +1,5 @@
 === Elasticommerce Related Items ===
-Contributors: hideokamoto,megumithemes,horike
+Contributors: amimotoami,hideokamoto,megumithemes,horike,kel-dc
 Tags: WooCommerce,Elasticsearch,recommend
 Requires at least: 4.3.1
 Tested up to: 4.3.1
