@@ -1,14 +1,52 @@
 <?php
+/**
+ * Show Admin Panel Class
+ *
+ * @package Elasticommerce-relateditem
+ * @author hideokamoto
+ * @since 0.1.0
+ **/
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+/**
+ * Admin Page Class
+ *
+ * @class ESCR_Admin
+ * @since 0.1.0
+ */
 class ESCR_Admin extends ESCR_Base {
+	/**
+	 * Instance Class
+	 * @access private
+	 */
 	private static $instance;
+
+	/**
+	 * text domain
+	 * @access private
+	 */
 	private static $text_domain;
 
 	const INDEX_ALL = 'escr_all_index';
 
+	/**
+	 * Constructer
+	 * Set text domain on class
+	 *
+	 * @since 0.1.0
+	 */
 	private function __construct() {
 		self::$text_domain = ESCR_Base::text_domain();
 	}
 
+	/**
+	 * Get Instance Class
+	 *
+	 * @return ESCR_Admin
+	 * @since 0.1.0
+	 */
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			$c = __CLASS__;
@@ -17,6 +55,11 @@ class ESCR_Admin extends ESCR_Base {
 		return self::$instance;
 	}
 
+	/**
+	 * Init action filters
+	 *
+	 * @since 0.1.0
+	 */
 	public function init() {
 
 		add_action( 'widgets_init', array( $this, 'escr_register_widgets' ) );
@@ -31,14 +74,29 @@ class ESCR_Admin extends ESCR_Base {
 		add_action( 'admin_init', array( $this, 'settings_init' ) );
 	}
 
+	/**
+	 * Register Widget
+	 *
+	 * @since 0.1.0
+	 */
 	public function escr_register_widgets() {
 		register_widget( 'ESC_RelatedItems' );
 	}
 
+	/**
+	 * Register Admin Option Page
+	 *
+	 * @since 0.1.0
+	 */
 	public function add_admin_menu() {
 		add_options_page( 'Elasticommerce Services', 'Elasticommerce Services', 'manage_options', 'escr_related', array( $this, 'escr_related_options' ) );
 	}
 
+	/**
+	 * Routing function
+	 *
+	 * @since 0.1.0
+	 */
 	public function settings_init() {
 		$this->_register_admin_panels();
 		if ( empty( $_POST ) ) {
@@ -51,6 +109,11 @@ class ESCR_Admin extends ESCR_Base {
 		}
 	}
 
+	/**
+	 * Register admin setting field
+	 *
+	 * @since 0.1.0
+	 */
 	private function _register_admin_panels() {
 		register_setting( 'ElasticommerceRelated', 'escr_settings' );
 		add_settings_section(
@@ -97,6 +160,11 @@ class ESCR_Admin extends ESCR_Base {
 		);
 	}
 
+	/**
+	 * echo input field (elasticsearch endpoint)
+	 *
+	 * @since 0.1.0
+	 */
 	public function endpoint_render() {
 		$options = get_option( 'escr_settings' );
 		$endpoint = '';
@@ -106,6 +174,11 @@ class ESCR_Admin extends ESCR_Base {
 		echo "<input type='text' name='escr_settings[endpoint]' value='{$endpoint}'>";
 	}
 
+	/**
+	 * echo input field( Elasticsearch score)
+	 *
+	 * @since 0.1.0
+	 */
 	public function score_render() {
 		$options = get_option( 'escr_settings' );
 		if ( ! isset( $options['score'] ) ) {
@@ -114,6 +187,11 @@ class ESCR_Admin extends ESCR_Base {
 		echo "<input type='text' name='escr_settings[score]' value='". $options['score']. "'>";
 	}
 
+	/**
+	 * echo selection field( Elasticsearch search target )
+	 *
+	 * @since 0.1.0
+	 */
 	public function search_target_render() {
 		$target = $this->get_elasticsearch_target();
 		$default_target_list = array(
@@ -136,18 +214,38 @@ class ESCR_Admin extends ESCR_Base {
 		echo "</select>";
 	}
 
+	/**
+	 * echo setting section description
+	 *
+	 * @since 0.1.0
+	 */
 	public function escr_settings_section_callback() {
 		echo __( '', self::$text_domain );
 	}
 
+	/**
+	 * echo Search Score Field Description
+	 *
+	 * @since 0.1.0
+	 */
 	public function escr_settings_score_section_callback() {
 		echo __( 'You can exchange Search Score.', self::$text_domain );
 	}
 
+	/**
+	 * echo Search Target Field Description
+	 *
+	 * @since 0.1.0
+	 */
 	public function escr_settings_target_section_callback() {
 		echo __( 'You can select search target fields.', self::$text_domain );
 	}
 
+	/**
+	 * echo form area
+	 *
+	 * @since 0.1.0
+	 */
 	public function escr_related_options() {
 		if ( $this->is_activate_esc_search_form() ) {
 			echo '<hr/>';
@@ -166,6 +264,12 @@ class ESCR_Admin extends ESCR_Base {
 		echo '</form>';
 	}
 
+	/**
+	 * Update related product list using Elasticsearch
+	 *
+	 * @return bool
+	 * @since 0.1.0
+	 */
 	public function all_update_related_product() {
 		$Importer = ESCR_Importer::get_instance();
 		$result = $Importer->import_all_product();
@@ -190,6 +294,15 @@ class ESCR_Admin extends ESCR_Base {
 		return true;
 	}
 
+	/**
+	 * Update Related Prduct if product update
+	 *
+	 * @param $new_status string
+	 * @param $old_status string
+	 * @param $post WC_Product
+	 * @since 0.1.0
+	 * @return array
+	 */
 	public function update_related_product( $new_status, $old_status, $post ) {
 		if ( ! $this->is_import( $new_status , $old_status ) ) {
 			return;
@@ -198,9 +311,7 @@ class ESCR_Admin extends ESCR_Base {
 		if ( ! $this->is_activate_esc_search_form() ) {
 			$Importer = ESCR_Importer::get_instance();
 			$result = $Importer->import_all_product();
-			//@TODO:全商品のインデックス登録は専用ボタンをつけたい
-			//@TODO:記事更新時のインデックスはその記事だけにしたい
-			//$result = $Importer->import_single_product( $post );
+			//@TODO Add single data index function
 			if ( is_wp_error( $result ) ) {
 				return $result;
 			}
@@ -214,6 +325,14 @@ class ESCR_Admin extends ESCR_Base {
 		$this->overwrite_woo_related( $post->ID, $item_id_list );
 	}
 
+	/**
+	 * Check Post status
+	 *
+	 * @param $new_status string
+	 * @param $old_status string
+	 * @since 0.1.0
+	 * @return bool
+	 */
 	private function is_import( $new_status, $old_status ) {
 		if ( 'publish' === $new_status ) {
 			//if publish or update posts.
@@ -228,6 +347,13 @@ class ESCR_Admin extends ESCR_Base {
 		return $result;
 	}
 
+	/**
+	 * Overwrite transient wc_related_{product_id}
+	 *
+	 * @param $ID string
+	 * @param $product_id srray
+	 * @since 0.1.0
+	 */
 	private function overwrite_woo_related( $ID, $item_id_list ) {
 		$transient_name = 'wc_related_' . $ID;
 		set_transient( $transient_name , $item_id_list , DAY_IN_SECONDS);

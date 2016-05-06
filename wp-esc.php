@@ -1,13 +1,21 @@
 <?php
 /**
  * Control Elasticommerce.
+ * @package Elasticommerce-relateditem
+ * @author hideokamoto
  */
 require_once  __DIR__ . '/module/base.php';
 require_once  __DIR__ . '/module/es-importer.php';
 require_once  __DIR__ . '/module/es-searcher.php';
 require_once  __DIR__ . '/module/es-admin.php';
-class Elascticommerce_Related_Command extends WP_CLI_Command {
 
+/**
+ * WP-CLI Command for control Elasticommerce Related Item Plugins
+ *
+ * @class Elascticommerce_Related_Command
+ * @since 0.1.0
+ */
+class Elascticommerce_Related_Command extends WP_CLI_Command {
     /**
      * Import All Product to Elasticsearch
      *
@@ -16,6 +24,9 @@ class Elascticommerce_Related_Command extends WP_CLI_Command {
      *     wp esc import_all          : Import All Products to Elasticsearch
 	 *     wp esc import_all --update : Import and Update Related Product List.
      *
+	 * @param string $args: WP-CLI Command Name
+	 * @param string $assoc_args: WP-CLI Command Option
+	 * @since 0.1.0
      */
     function import_all( $args, $assoc_args ) {
 		if ( array_search( 'update', $assoc_args ) ) {
